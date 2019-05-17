@@ -19,7 +19,7 @@ The following code will install the packages used in the project:
 
 ```{r packages, message=FALSE, warning=FALSE}
 #list of packages used
-packages <- c("tm", "wordcloud", "lubridate", "SnowballC")
+packages <- c("tm", "wordcloud", "lubridate", "SnowballC", "dplyr")
 
 #check to see if package is already installed, if not, install
 for(p in packages){
@@ -60,8 +60,216 @@ reviews <- reviews[!reviews$Review.Heading=="", ]
 reviews$review.number <- 1:21039
 ```
 
-```{r}
+## Text Cleanup
+
+The header and review columns both hold key guest sentiments, and will both be used to mine for guest opinion. By putting each into their own vector, useless characters such as punctuation and digits can be removed. 
+
+```{r text-cleanup}
+#create separate text vectors for headings and reviews
+header_vec <- reviews$Review.Heading
+review_vec <- reviews$Review
+
+#remove blank spaces from beginning of reviews
+header_vec <- gsub("^ ", "", header_vec)
+review_vec <- gsub("^ ", "", review_vec)
+
+#remove blank spaces from end of reviews
+header_vec <- gsub(" $", "", header_vec)
+review_vec <- gsub(" $", "", review_vec)
+
+#convert to lower class
+header_vec <- tolower(header_vec)
+review_vec <- tolower(review_vec)
+
+#remove links
+header_vec <- gsub("http\\S+\\s*", "", header_vec)
+review_vec <- gsub("http\\S+\\s*", "", review_vec)
+
+#remove punctuation
+header_vec <- gsub("[[:punct:]]", "", header_vec)
+review_vec <- gsub("[[:punct:]]", "", review_vec)
+
+#remove digits
+header_vec <- gsub("[[:digit:]]", "", header_vec)
+review_vec <- gsub("[[:digit:]]", "", review_vec)
+
+#remove irrelevant words (no information gleaned from these terms)
+header_vec <- gsub("maldives", "", header_vec)
+header_vec <- gsub("hotel", "", header_vec)
+header_vec <- gsub("resort", "", header_vec)
+header_vec <- gsub("island", "", header_vec)
+header_vec <- gsub("staff", "", header_vec)
+header_vec <- gsub("stayed", "", header_vec)
+review_vec <- gsub("maldives", "", review_vec)
+review_vec <- gsub("hotel", "", review_vec)
+review_vec <- gsub("resort", "", review_vec)
+review_vec <- gsub("island", "", review_vec)
+review_vec <- gsub("staff", "", review_vec)
+review_vec <- gsub("stayed", "", review_vec)
+
+#convert to corpus for text mining
+header_vec <- Corpus(VectorSource(header_vec))
+review_vec <- Corpus(VectorSource(review_vec))
+
+#remove stop words and white space from header
+header_vec <- tm_map(header_vec, removeWords,stopwords("english"))
+header_vec <- tm_map(header_vec, stripWhitespace)
+
+#remove stop words and white space from review body
+review_vec <- tm_map(review_vec, removeWords,stopwords("english"))
+review_vec <- tm_map(review_vec, stripWhitespace)
 ```
+
+## Prepare for Text Mining
+
+Two text files, a positive and negative lexicon, will be used to identify "positive" and "negative" words. These can be loaded from my github page. 
+
+```{r lexicon-load}
+#load positive and negative lexicons
+path1 <- "https://raw.githubusercontent.com/ianjeffries/review-sentiment-analysis/master/data/negative-lexicon.txt"
+path2 <- "https://raw.githubusercontent.com/ianjeffries/review-sentiment-analysis/master/data/positive-lexicon.txt"
+
+neg_lexicon <- read.csv(path1)
+pos_lexicon <- read.csv(path2)
+
+#create vector to store line-item results for sentiment analysis
+header_results <- matrix(rep(0, 63117), ncol = 3,
+                         dimnames = list(c(1:21039), c("review.number", "header.pos.count", "header.neg.count")))
+header_results <- as.data.frame(header_results)
+
+review_results <- matrix(rep(0, 63117), ncol = 3,
+                         dimnames = list(c(1:21039), c("review.number", "review.pos.count", "review.neg.count")))
+review_results <- as.data.frame(review_results)
+```
+
+## Generate Wordclouds
+
+Wordclouds can be used to view the most frequently occuring words. 
+
+```{r wordclouds}
+#generate header wordcloud
+wordcloud(header_vec,
+          min.freq = 3,
+          colors=brewer.pal(8, "Dark2"),
+          random.color = TRUE,
+          random.order = FALSE,
+          max.words = 75)
+
+#generate review body wordcloud
+wordcloud(review_vec,
+          min.freq = 3,
+          colors=brewer.pal(8, "Dark2"),
+          random.color = TRUE,
+          random.order = FALSE,
+          max.words = 75)
+```
+
+## Find Guest Sentiment
+
+The following loop compares each word in the review header and body to the positive and negative lexicons, and assigns a count for every positive or negative match. A negative, positive, or neutral label is then assigned to each review, based on the total percentage of positive or negative words. 
+
+```{r sentiment}
+#find sentiment in review header
+for(i in 1:length(header_vec)) {
+  #All the words in headers
+  corpus_words <- list(strsplit(header_vec[[i]]$content, split = " "))
+  #positive words in headers
+  pos_count <- length(intersect(unlist(corpus_words), unlist(pos_lexicon)))
+  #negative words in current review
+  neg_count <- length(intersect(unlist(corpus_words), unlist(neg_lexicon)))
+  header_results[i, 1] <- i
+  header_results[i, 2] <- pos_count ## track positive count
+  header_results[i, 3] <- neg_count ## track negative count
+}
+
+#find sentiment in review body
+for(i in 1:length(review_vec)) {
+  #All the words in headers
+  corpus_words <- list(strsplit(review_vec[[i]]$content, split = " "))
+  #positive words in headers
+  pos_count <- length(intersect(unlist(corpus_words), unlist(pos_lexicon)))
+  #negative words in current review
+  neg_count <- length(intersect(unlist(corpus_words), unlist(neg_lexicon)))
+  review_results[i, 1] <- i
+  review_results[i, 2] <- pos_count ## track positive count
+  review_results[i, 3] <- neg_count ## track negative count
+}
+
+#add sentiment back with dataset
+final_sentiment <- left_join(reviews, select(header_results, review.number, header.pos.count, header.neg.count),
+                             by = c("review.number"))
+final_sentiment <- left_join(final_sentiment, select(review_results, review.number, review.pos.count, review.neg.count),
+                             by = c("review.number"))
+
+#drop irrelevant columns
+final_sentiment <- final_sentiment[, -which(names(final_sentiment) %in%
+                                              c("Total.review.count", "Review_viaMobile", "Review.Heading", "Review"))]
+
+#rearrange
+final_sentiment <- final_sentiment[,c(5,1,2,3,4,6,7,8,9)]
+
+#view final results
+head(final_sentiment)
+
+#view overall sentiments
+sum(final_sentiment$header.pos.count) / (sum(final_sentiment$header.pos.count)+sum(final_sentiment$header.neg.count))
+sum(final_sentiment$header.neg.count) / (sum(final_sentiment$header.pos.count)+sum(final_sentiment$header.neg.count))
+sum(final_sentiment$review.pos.count) / (sum(final_sentiment$review.pos.count)+sum(final_sentiment$review.neg.count))
+sum(final_sentiment$review.neg.count) / (sum(final_sentiment$review.pos.count)+sum(final_sentiment$review.neg.count))
+
+#calculate overall sentiment percentage by row
+final_sentiment$header.pos.percent <- round(final_sentiment$header.pos.count / (final_sentiment$header.pos.count +
+                                                                                  final_sentiment$header.neg.count) * 100, 2)
+final_sentiment$header.neg.percent <- round(final_sentiment$header.neg.count / (final_sentiment$header.pos.count +
+                                                                                  final_sentiment$header.neg.count) * 100, 2)
+final_sentiment$review.pos.percent <- round(final_sentiment$review.pos.count / (final_sentiment$review.pos.count +
+                                                                                  final_sentiment$review.neg.count) * 100, 2)
+final_sentiment$review.neg.percent <- round(final_sentiment$review.neg.count / (final_sentiment$review.pos.count +
+                                                                                  final_sentiment$review.neg.count) * 100, 2)
+
+#change NaN to 50-50 (both zero)
+final_sentiment$header.pos.percent <- gsub("NaN", 50, final_sentiment$header.pos.percent)
+final_sentiment$header.neg.percent <- gsub("NaN", 50, final_sentiment$header.neg.percent)
+final_sentiment$review.pos.percent <- gsub("NaN", 50, final_sentiment$review.pos.percent)
+final_sentiment$review.neg.percent <- gsub("NaN", 50, final_sentiment$review.neg.percent)
+
+#change percentage to numeric
+for (i in 10:13) {
+  final_sentiment[,i] <- as.numeric(final_sentiment[,i])
+}
+str(final_sentiment)
+
+#add in overall sentiment label
+final_sentiment$header.sentiment <- ""
+final_sentiment$review.sentiment <- ""
+
+#calculate sentiment labels for review headers
+for (i in 1:nrow(final_sentiment)) {
+  final_sentiment[i, which(names(final_sentiment) == "header.sentiment")]  <-
+    if(final_sentiment[i, which(names(final_sentiment) == "header.pos.percent")] > 50) {
+      "Positive"
+    } else if (final_sentiment[i, which(names(final_sentiment) == "header.pos.percent")] == 50) {
+      "Neutral"
+    } else {
+      "Negative"
+    }
+}
+
+#calculate sentiment labels for review body
+for (i in 1:nrow(final_sentiment)) {
+  final_sentiment[i, which(names(final_sentiment) == "review.sentiment")]  <-
+    if(final_sentiment[i, which(names(final_sentiment) == "review.pos.percent")] > 50) {
+      "Positive"
+    } else if (final_sentiment[i, which(names(final_sentiment) == "review.pos.percent")] == 50) {
+      "Neutral"
+    } else {
+      "Negative"
+    }
+}
+
+
+```
+
 
 
 ```{r}
