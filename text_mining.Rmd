@@ -1,0 +1,68 @@
+---
+title: "Text Mining Sentiment from Hotel Reviews"
+author: "Ian Jeffries"
+date: "5/17/2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The following R Markdown outlines the steps used by Ian Jeffries to mine sentiment from over 21,000 hotel reviews on resorts located in the Republic of Maldives, a South Asian country located in the Indian Ocean. 
+
+## Install necessary packages
+
+The following code will install the packages used in the project:
+
+```{r packages, message=FALSE, warning=FALSE}
+#list of packages used
+packages <- c("tm", "wordcloud", "lubridate", "SnowballC")
+
+#check to see if package is already installed, if not, install
+for(p in packages){
+  if(!require(p, character.only = TRUE)) {
+    install.packages(p)
+    library(p, character.only = TRUE)
+  } 
+}
+```
+## Import the Hotel Review Dataset
+
+Import the data from my github page
+
+```{r data import}
+path <- "https://raw.githubusercontent.com/ianjeffries/review-sentiment-analysis/master/data/maldives_hotel_reviews.csv"
+reviews <- read.csv(path, header = TRUE, stringsAsFactors = FALSE)
+head(reviews)
+str(reviews)
+```
+
+## Cleaning the Data
+
+The data can now be prepared for analysis.
+
+```{r data cleaning}
+#change date to date format
+reviews$Review.Date <- dmy(reviews$Review.Date)
+
+#fix "invalid multibyte" error
+for (i in c(1, 2, 5:8)) {
+  reviews[ ,i] <- enc2utf8(reviews[,i])
+}
+
+#remove rows without review
+reviews <- reviews[!reviews$Review.Heading=="", ]
+
+#add in review number
+reviews$review.number <- 1:21039
+```
+
+```{r}
+```
+
+
+```{r}
+```
