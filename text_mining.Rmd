@@ -302,4 +302,5 @@ ggplot(sent_comparison, aes(x = Sentiment, fill = Source)) +
 
 
 ```{r}
+head(sent_comparison)
 ```
