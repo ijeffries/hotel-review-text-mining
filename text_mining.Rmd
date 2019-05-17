@@ -19,7 +19,7 @@ The following code will install the packages used in the project:
 
 ```{r packages, message=FALSE, warning=FALSE}
 #list of packages used
-packages <- c("tm", "wordcloud", "lubridate", "SnowballC", "dplyr")
+packages <- c("tm", "wordcloud", "lubridate", "SnowballC", "dplyr", "tidyr", "ggplot2")
 
 #check to see if package is already installed, if not, install
 for(p in packages){
@@ -270,6 +270,35 @@ for (i in 1:nrow(final_sentiment)) {
 
 ```
 
+## Vizualize First Pass
+
+A graph can now be created to vizualize the overall sentiment of the reviews.
+
+```{r}
+#rearrange dataset
+final_sentiment <- final_sentiment[ ,c(1:7, 10, 11, 14, 8, 9, 12, 13, 15)]
+head(final_sentiment)
+
+#create frame to graph sentiment results
+sent_comparison <- matrix(rep(0, 42078), ncol = 2,
+                          dimnames = list(c(1:21039), c("header.sentiment", "review.sentiment")))
+sent_comparison <- as.data.frame(sent_comparison)
+
+#add in results
+sent_comparison[ , 1:2] <- final_sentiment[ ,c(10,15)]
+head(sent_comparison)
+
+#make narrow to graph
+sent_comparison <- gather(sent_comparison, key = Source, value = Sentiment, 1:2)
+head(sent_comparison)
+
+#plot the results
+theme_update(plot.title = element_text(hjust = 0.5))
+ggplot(sent_comparison, aes(x = Sentiment, fill = Source)) +
+  geom_histogram(stat = "count", position = position_dodge(width = .7), alpha = .9) +
+  ggtitle("Sentiment Comparison") +
+  scale_fill_brewer(palette = "Dark2")
+```
 
 
 ```{r}
