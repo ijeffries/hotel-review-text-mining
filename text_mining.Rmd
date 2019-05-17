@@ -274,7 +274,7 @@ for (i in 1:nrow(final_sentiment)) {
 
 A graph can now be created to vizualize the overall sentiment of the reviews.
 
-```{r}
+```{r first-pass}
 #rearrange dataset
 final_sentiment <- final_sentiment[ ,c(1:7, 10, 11, 14, 8, 9, 12, 13, 15)]
 head(final_sentiment)
@@ -282,6 +282,7 @@ head(final_sentiment)
 #create frame to graph sentiment results
 sent_comparison <- matrix(rep(0, 42078), ncol = 2,
                           dimnames = list(c(1:21039), c("header.sentiment", "review.sentiment")))
+
 sent_comparison <- as.data.frame(sent_comparison)
 
 #add in results
