@@ -1,7 +1,7 @@
 ---
 title: "Text Mining Sentiment from Hotel Reviews"
 author: "Ian Jeffries"
-date: "5/17/2019"
+date: "5/21/2019"
 output:
   pdf_document: default
   html_document: default
@@ -33,10 +33,14 @@ for(p in packages){
 
 Import the data from my github page
 
-```{r data import}
-path <- "https://raw.githubusercontent.com/ianjeffries/review-sentiment-analysis/master/data/maldives_hotel_reviews.csv"
+```{r data-import}
+#import data from github
+path <- "https://raw.githubusercontent.com/ianjeffries/review-sentiment-analysis/master/
+data/maldives_hotel_reviews.csv"
+
 reviews <- read.csv(path, header = TRUE, stringsAsFactors = FALSE)
-head(reviews)
+
+#see structure of dataframe
 str(reviews)
 ```
 
@@ -44,7 +48,7 @@ str(reviews)
 
 The data can now be prepared for analysis.
 
-```{r data cleaning}
+```{r data-cleaning}
 #change date to date format
 reviews$Review.Date <- dmy(reviews$Review.Date)
 
@@ -64,7 +68,7 @@ reviews$review.number <- 1:21039
 
 The header and review columns both hold key guest sentiments, and will both be used to mine for guest opinion. By putting each into their own vector, useless characters such as punctuation and digits can be removed. 
 
-```{r text-cleanup}
+```{r text-cleanup, message=FALSE, warning=FALSE}
 #create separate text vectors for headings and reviews
 header_vec <- reviews$Review.Heading
 review_vec <- reviews$Review
@@ -126,19 +130,28 @@ Two text files, a positive and negative lexicon, will be used to identify "posit
 
 ```{r lexicon-load}
 #load positive and negative lexicons
-path1 <- "https://raw.githubusercontent.com/ianjeffries/review-sentiment-analysis/master/data/negative-lexicon.txt"
-path2 <- "https://raw.githubusercontent.com/ianjeffries/review-sentiment-analysis/master/data/positive-lexicon.txt"
+path1 <- "https://raw.githubusercontent.com/ianjeffries/review-sentiment-analysis/master/
+data/negative-lexicon.txt"
 
+path2 <- "https://raw.githubusercontent.com/ianjeffries/review-sentiment-analysis/master/
+data/positive-lexicon.txt"
+
+#read in lexicons
 neg_lexicon <- read.csv(path1)
 pos_lexicon <- read.csv(path2)
 
 #create vector to store line-item results for sentiment analysis
 header_results <- matrix(rep(0, 63117), ncol = 3,
-                         dimnames = list(c(1:21039), c("review.number", "header.pos.count", "header.neg.count")))
+                         dimnames = list(c(1:21039), c("review.number", "header.pos.count", 
+                                                       "header.neg.count")))
+#convert to dataframe
 header_results <- as.data.frame(header_results)
 
+#create vector to store line-item results for sentiment analysis
 review_results <- matrix(rep(0, 63117), ncol = 3,
-                         dimnames = list(c(1:21039), c("review.number", "review.pos.count", "review.neg.count")))
+                         dimnames = list(c(1:21039), c("review.number", "review.pos.count", 
+                                                       "review.neg.count")))
+#convert to dataframe
 review_results <- as.data.frame(review_results)
 ```
 
@@ -146,7 +159,7 @@ review_results <- as.data.frame(review_results)
 
 Wordclouds can be used to view the most frequently occuring words. 
 
-```{r wordclouds}
+```{r wordclouds, warning=FALSE}
 #generate header wordcloud
 wordcloud(header_vec,
           min.freq = 3,
@@ -166,7 +179,7 @@ wordcloud(review_vec,
 
 ## Find Guest Sentiment
 
-The following loop compares each word in the review header and body to the positive and negative lexicons, and assigns a count for every positive or negative match. A negative, positive, or neutral label is then assigned to each review, based on the total percentage of positive or negative words. 
+The wordclouds show that mainly positive words are the most commonly occuring, but we can dig in even further. The following loop compares each word in the review header and body to the positive and negative lexicons, and assigns a count for every positive or negative match. A negative, positive, or neutral label is then assigned to each review, based on the total percentage of positive or negative words. 
 
 ```{r sentiment}
 #find sentiment in review header
@@ -195,37 +208,54 @@ for(i in 1:length(review_vec)) {
   review_results[i, 3] <- neg_count ## track negative count
 }
 
-#add sentiment back with dataset
-final_sentiment <- left_join(reviews, select(header_results, review.number, header.pos.count, header.neg.count),
+#add header sentiment back with dataset
+final_sentiment <- left_join(reviews, select(header_results, review.number, 
+                                             header.pos.count, header.neg.count),
                              by = c("review.number"))
-final_sentiment <- left_join(final_sentiment, select(review_results, review.number, review.pos.count, review.neg.count),
+
+#add body sentiment back with dataset
+final_sentiment <- left_join(final_sentiment, select(review_results, review.number, 
+                                                     review.pos.count, review.neg.count),
                              by = c("review.number"))
 
 #drop irrelevant columns
 final_sentiment <- final_sentiment[, -which(names(final_sentiment) %in%
-                                              c("Total.review.count", "Review_viaMobile", "Review.Heading", "Review"))]
+                                              c("Total.review.count", 
+                                                "Review_viaMobile",
+                                                "Review.Heading", "Review"))]
 
 #rearrange
 final_sentiment <- final_sentiment[,c(5,1,2,3,4,6,7,8,9)]
 
-#view final results
-head(final_sentiment)
+#view header positive sentiment percentage
+sum(final_sentiment$header.pos.count) / (sum(final_sentiment$header.pos.count)+
+                                           sum(final_sentiment$header.neg.count))
 
-#view overall sentiments
-sum(final_sentiment$header.pos.count) / (sum(final_sentiment$header.pos.count)+sum(final_sentiment$header.neg.count))
-sum(final_sentiment$header.neg.count) / (sum(final_sentiment$header.pos.count)+sum(final_sentiment$header.neg.count))
-sum(final_sentiment$review.pos.count) / (sum(final_sentiment$review.pos.count)+sum(final_sentiment$review.neg.count))
-sum(final_sentiment$review.neg.count) / (sum(final_sentiment$review.pos.count)+sum(final_sentiment$review.neg.count))
+#view header negative sentiment percentage
+sum(final_sentiment$header.neg.count) / (sum(final_sentiment$header.pos.count)+
+                                           sum(final_sentiment$header.neg.count))
+
+#view body positive sentiment percentage
+sum(final_sentiment$review.pos.count) / (sum(final_sentiment$review.pos.count)+
+                                           sum(final_sentiment$review.neg.count))
+
+#view body negative sentiment percentage
+sum(final_sentiment$review.neg.count) / (sum(final_sentiment$review.pos.count)+
+                                           sum(final_sentiment$review.neg.count))
 
 #calculate overall sentiment percentage by row
-final_sentiment$header.pos.percent <- round(final_sentiment$header.pos.count / (final_sentiment$header.pos.count +
-                                                                                  final_sentiment$header.neg.count) * 100, 2)
-final_sentiment$header.neg.percent <- round(final_sentiment$header.neg.count / (final_sentiment$header.pos.count +
-                                                                                  final_sentiment$header.neg.count) * 100, 2)
-final_sentiment$review.pos.percent <- round(final_sentiment$review.pos.count / (final_sentiment$review.pos.count +
-                                                                                  final_sentiment$review.neg.count) * 100, 2)
-final_sentiment$review.neg.percent <- round(final_sentiment$review.neg.count / (final_sentiment$review.pos.count +
-                                                                                  final_sentiment$review.neg.count) * 100, 2)
+final_sentiment$header.pos.percent <- round(final_sentiment$header.pos.count / 
+                                              (final_sentiment$header.pos.count +
+                                               final_sentiment$header.neg.count) * 100, 2)
+
+final_sentiment$header.neg.percent <- round(final_sentiment$header.neg.count / 
+                                              (final_sentiment$header.pos.count +                                                                                    final_sentiment$header.neg.count) * 100, 2)
+
+final_sentiment$review.pos.percent <- round(final_sentiment$review.pos.count / 
+                                              (final_sentiment$review.pos.count +                                                                                    final_sentiment$review.neg.count) * 100, 2)
+
+final_sentiment$review.neg.percent <- round(final_sentiment$review.neg.count / 
+                                              (final_sentiment$review.pos.count +                                                                                    final_sentiment$review.neg.count) * 100, 2)
 
 #change NaN to 50-50 (both zero)
 final_sentiment$header.pos.percent <- gsub("NaN", 50, final_sentiment$header.pos.percent)
@@ -237,7 +267,6 @@ final_sentiment$review.neg.percent <- gsub("NaN", 50, final_sentiment$review.neg
 for (i in 10:13) {
   final_sentiment[,i] <- as.numeric(final_sentiment[,i])
 }
-str(final_sentiment)
 
 #add in overall sentiment label
 final_sentiment$header.sentiment <- ""
@@ -248,7 +277,8 @@ for (i in 1:nrow(final_sentiment)) {
   final_sentiment[i, which(names(final_sentiment) == "header.sentiment")]  <-
     if(final_sentiment[i, which(names(final_sentiment) == "header.pos.percent")] > 50) {
       "Positive"
-    } else if (final_sentiment[i, which(names(final_sentiment) == "header.pos.percent")] == 50) {
+    } else if (final_sentiment[i, which(names(final_sentiment) == 
+                                        "header.pos.percent")] == 50) {
       "Neutral"
     } else {
       "Negative"
@@ -277,23 +307,22 @@ A graph can now be created to vizualize the overall sentiment of the reviews.
 ```{r first-pass}
 #rearrange dataset
 final_sentiment <- final_sentiment[ ,c(1:7, 10, 11, 14, 8, 9, 12, 13, 15)]
-head(final_sentiment)
 
-#create frame to graph sentiment results
+#create matirx to graph sentiment results
 sent_comparison <- matrix(rep(0, 42078), ncol = 2,
-                          dimnames = list(c(1:21039), c("header.sentiment", "review.sentiment")))
+                          dimnames = list(c(1:21039), c("header.sentiment", 
+                                                        "review.sentiment")))
 
+#convert matrix to dataframe
 sent_comparison <- as.data.frame(sent_comparison)
 
 #add in results
 sent_comparison[ , 1:2] <- final_sentiment[ ,c(10,15)]
-head(sent_comparison)
 
-#make narrow to graph
+#make dataframe narrow to graph
 sent_comparison <- gather(sent_comparison, key = Source, value = Sentiment, 1:2)
-head(sent_comparison)
 
-#plot the results
+#plot to see sentiment breakdown between review header and body
 theme_update(plot.title = element_text(hjust = 0.5))
 ggplot(sent_comparison, aes(x = Sentiment, fill = Source)) +
   geom_histogram(stat = "count", position = position_dodge(width = .7), alpha = .9) +
@@ -303,22 +332,26 @@ ggplot(sent_comparison, aes(x = Sentiment, fill = Source)) +
 
 ## Combine Header and Body Sentiment
 
-The total positive and negative word count for the body and header of each review will be combined, in an attempt to glean even more information on guest sentiment. 
+The total positive and negative word count for the review body and header will be combined, in an attempt to glean even more information on guest sentiment. 
 
 ```{r combined-sentiment}
 #combine review and header sentiment counts for greater clarity
 final_sentiment2 <- final_sentiment[ , 1:5]
-final_sentiment2$pos.count <- final_sentiment$header.pos.count + final_sentiment$review.pos.count
-final_sentiment2$neg.count <- final_sentiment$header.neg.count + final_sentiment$review.neg.count
+final_sentiment2$pos.count <- final_sentiment$header.pos.count + 
+                              final_sentiment$review.pos.count
+
+final_sentiment2$neg.count <- final_sentiment$header.neg.count + 
+                              final_sentiment$review.neg.count
 
 #create sentiment percetage
-final_sentiment2$pos.percent <- round(final_sentiment2$pos.count / (final_sentiment2$pos.count +
-                                                                      final_sentiment2$neg.count) * 100, 2)
+final_sentiment2$pos.percent <- round(final_sentiment2$pos.count / 
+                                        (final_sentiment2$pos.count +                                                                                          final_sentiment2$neg.count) * 100, 2)
 
 final_sentiment2$pos.percent <- gsub("NaN", 50, final_sentiment2$pos.percent)
 
-final_sentiment2$neg.percent <- round(final_sentiment2$neg.count / (final_sentiment2$pos.count +
-                                                                      final_sentiment2$neg.count) * 100, 2)
+final_sentiment2$neg.percent <- round(final_sentiment2$neg.count / 
+                                        (final_sentiment2$pos.count +
+                                         final_sentiment2$neg.count) * 100, 2)
 
 final_sentiment2$neg.percent <- gsub("NaN", 50, final_sentiment2$neg.percent)
 
@@ -344,10 +377,10 @@ for (i in 1:nrow(final_sentiment2)) {
 
 ## Remove Duplicate Reviews
 
-During the visualization phase, I noticed that there were duplicate reviews present. (Possibly created by bots to inflate positive reviews) The following visualizes the impact of duplicate reviews. 
+During the visualization phase, I noticed that there were duplicate reviews present (possibly created by bots to inflate positive reviews). The following visualizes the impact of duplicate reviews. 
 
 ```{r duplicates}
-#create dataset for time series analysis (this is where I found the duplicates & addressed them)
+#create dataset for time series analysis (this is where I found the duplicates)
 time_plot <- final_sentiment2
 time_plot$Review.Year <- final_sentiment2$Review.Date
 time_plot$Review.Year <- as.POSIXct(time_plot$Review.Year)
@@ -359,6 +392,8 @@ time_plot$Review.Date <- format(time_plot$Review.Date, "%Y-%m")
 dup_removal <- matrix(rep(0,9), ncol = 3, dimnames = list(1:3, c("review.sentiment",
                                                                  "With.Duplicates",
                                                                  "Without.Duplicates")))
+
+#convert to dataframe
 dup_removal <- as.data.frame(dup_removal)
 
 #look at effect of removing duplicates
