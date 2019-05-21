@@ -33,7 +33,7 @@ The following project utilizes R to mine sentiment from over 21,000 hotel review
   
 4. [**text_mining.pdf**](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/text_mining.pdf) - PDF that shows R code and the outputted results, for easy viewing.
   
-5. [**results.pdf**](https://github.com/ianjeffries/election-predictions/blob/master/results.pdf) - A full write-up comparing classification and association rules mining in R vs SAS.
+5. [**results.pdf**](https://github.com/ianjeffries/hotel-review-text-mining/blob/master/results.pdf) - A full write-up comparing text mining in R vs SAS.
 
 ## Language and Packages Used
 
