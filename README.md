@@ -1,4 +1,4 @@
-# review-sentiment-analysis
+# hotel-review-text-mining
 
 <p align="center">
 <img src="https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/header_wordcloud.PNG" alt="alt text" width="790" height="570">
