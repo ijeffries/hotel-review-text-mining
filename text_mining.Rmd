@@ -304,7 +304,7 @@ for (i in 1:nrow(final_sentiment)) {
 
 A graph can now be created to vizualize the overall sentiment of the reviews.
 
-```{r first-pass}
+```{r first-pass, warning=FALSE}
 #rearrange dataset
 final_sentiment <- final_sentiment[ ,c(1:7, 10, 11, 14, 8, 9, 12, 13, 15)]
 
@@ -510,7 +510,7 @@ time_plot %>%
   scale_x_continuous(limits = c(0,20), breaks = c(0,5,10,15,20))
 ```
 
+## Conclusion
 
-```{r}
-```
+In conclusion, it appears that resorts in the Maldives have very positive sentiment from the guests that have stayed there. A full write up of methods used and analysis can be found on my github page.  
 
