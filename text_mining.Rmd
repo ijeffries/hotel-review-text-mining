@@ -11,7 +11,8 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-The following R Markdown outlines the steps used by Ian Jeffries to mine sentiment from over 21,000 hotel reviews on resorts located in the Republic of Maldives, a South Asian country located in the Indian Ocean. 
+The following R Markdown outlines the steps used by Ian Jeffries to mine sentiment from over 21,000 hotel reviews 
+on resorts located in the Republic of Maldives, a South Asian country located in the Indian Ocean. 
 
 ## Install necessary packages
 
@@ -66,7 +67,8 @@ reviews$review.number <- 1:21039
 
 ## Text Cleanup
 
-The header and review columns both hold key guest sentiments, and will both be used to mine for guest opinion. By putting each into their own vector, useless characters such as punctuation and digits can be removed. 
+The header and review columns both hold key guest sentiments, and will both be used to mine for guest opinion. 
+By putting each into their own vector, useless characters such as punctuation and digits can be removed. 
 
 ```{r text-cleanup, message=FALSE, warning=FALSE}
 #create separate text vectors for headings and reviews
@@ -126,7 +128,8 @@ review_vec <- tm_map(review_vec, stripWhitespace)
 
 ## Prepare for Text Mining
 
-Two text files, a positive and negative lexicon, will be used to identify "positive" and "negative" words. These can be loaded from my github page. 
+Two text files, a positive and negative lexicon, will be used to identify "positive" and "negative" words. 
+These can be loaded from my github page. 
 
 ```{r lexicon-load}
 #load positive and negative lexicons
@@ -179,7 +182,10 @@ wordcloud(review_vec,
 
 ## Find Guest Sentiment
 
-The wordclouds show that mainly positive words are the most commonly occuring, but we can dig in even further. The following loop compares each word in the review header and body to the positive and negative lexicons, and assigns a count for every positive or negative match. A negative, positive, or neutral label is then assigned to each review, based on the total percentage of positive or negative words. 
+The wordclouds show that mainly positive words are the most commonly occuring, but we can dig in even further. 
+The following loop compares each word in the review header and body to the positive and negative lexicons, 
+and assigns a count for every positive or negative match. A negative, positive, or neutral label is then 
+assigned to each review, based on the total percentage of positive or negative words. 
 
 ```{r sentiment}
 #find sentiment in review header
@@ -332,7 +338,8 @@ ggplot(sent_comparison, aes(x = Sentiment, fill = Source)) +
 
 ## Combine Header and Body Sentiment
 
-The total positive and negative word count for the review body and header will be combined, in an attempt to glean even more information on guest sentiment. 
+The total positive and negative word count for the review body and header will be combined, 
+in an attempt to glean even more information on guest sentiment. 
 
 ```{r combined-sentiment}
 #combine review and header sentiment counts for greater clarity
@@ -377,7 +384,9 @@ for (i in 1:nrow(final_sentiment2)) {
 
 ## Remove Duplicate Reviews
 
-During the visualization phase, I noticed that there were duplicate reviews present (possibly created by bots to inflate positive reviews). The following visualizes the impact of duplicate reviews. 
+During the visualization phase, I noticed that there were duplicate reviews present 
+(possibly created by bots to inflate positive reviews). The following visualizes the 
+impact of duplicate reviews. 
 
 ```{r duplicates}
 #create dataset for time series analysis (this is where I found the duplicates)
@@ -443,7 +452,9 @@ deduped_final_data <- unique(final_sentiment2[ , c(2:10)])
 
 ## Visualize Final Results
 
-Finally, graphs can be created to see the number of reviews by year, the total review sentiment by month for all resorts in Maldives, and the sentiment of the top 12 hotels, defined by the total word count of reviews for that specific resort. (more words means more text to work with for analysis)
+Finally, graphs can be created to see the number of reviews by year, the total review sentiment by month 
+for all resorts in Maldives, and the sentiment of the top 12 hotels, defined by the total word count of 
+reviews for that specific resort. (more words means more text to work with for analysis)
 
 ```{r final-viz, warning=FALSE}
 #plot reviews by date 
@@ -512,5 +523,6 @@ time_plot %>%
 
 ## Conclusion
 
-In conclusion, it appears that resorts in the Maldives have very positive sentiment from the guests that have stayed there. A full write up of methods used and analysis can be found on my github page.  
+In conclusion, it appears that resorts in the Maldives have very positive sentiment from the guests that have 
+stayed there. A full write up of methods used and analysis can be found on my github page.  
 
