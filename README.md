@@ -26,7 +26,7 @@ The following project utilizes R to mine sentiment from over 21,000 hotel review
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b. [header_wordcloud.PNG](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/header_wordcloud.PNG) - Wordcloud showing commonly occuring words in the review header.  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c. [monthly_sentiment.png](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/monthly_sentiment.png) - Overall sentiment by month for all hotels in the Republic of Maldives.   
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;d. [reviews_by_year.png](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/reviews_by_year.png) - Count of reviews by year.  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e. [sentiment_comparison.png](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/sentiment_comparison.png) - Comparision of negative and positive wordcounts between the review header and body.   
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e. [sentiment_comparison.png](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/sentiment_comparison.png) - Comparision of negative and positive wordcounts.   
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f. [top_12_hotels.png](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/top_12_hotels.png) - Top 12 resorts sentiment comparison.   
   
 3. [**text_mining.Rmd**](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/text_mining.Rmd) - R Markdown detailing the text mining process.  
@@ -43,8 +43,7 @@ The following packages are used:
   
   ```
 #list of packages used
-packages <- c("tm", "wordcloud", "lubridate", "SnowballC", "ggplot2", "dplyr", 
-              "tidyr", "plylr")
+packages <- c("tm", "wordcloud", "lubridate", "SnowballC", "ggplot2", "dplyr", "tidyr")
 
 #check to see if package is already installed
 for(p in packages){
