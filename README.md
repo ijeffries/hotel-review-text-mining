@@ -5,11 +5,11 @@
 </p>
 
 ## Index 
-1. [Summary](https://github.com/ianjeffries/election-predictions#summary)
-2. [File Directory](https://github.com/ianjeffries/election-predictions#file-directory)
-3. [Language and Packages Used](https://github.com/ianjeffries/election-predictions#language-and-packages-used)
-4. [Credits](https://github.com/ianjeffries/election-predictions#credits)
-5. [License](https://github.com/ianjeffries/election-predictions#license)
+1. [Summary](https://github.com/ianjeffries/text-sentiment-analysis#summary)
+2. [File Directory](https://github.com/ianjeffries/text-sentiment-analysis#file-directory)
+3. [Language and Packages Used](https://github.com/ianjeffries/text-sentiment-analysis#language-and-packages-used)
+4. [Credits](https://github.com/ianjeffries/text-sentiment-analysis#credits)
+5. [License](https://github.com/ianjeffries/text-sentiment-analysis#license)
 
 ## Summary 
 The following project utilizes R to mine sentiment from over 21,000 hotel reviews on resorts located in the Republic of Maldives, a South Asian country located in the Indian Ocean. 
