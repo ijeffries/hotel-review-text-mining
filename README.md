@@ -1,7 +1,7 @@
 # review-sentiment-analysis
 
 <p align="center">
-<img src="https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/header_wordcloud.PNG" alt="alt text" width="640" height="320">
+<img src="https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/header_wordcloud.PNG" alt="alt text" width="840" height="520">
 </p>
 
 ## Index 
@@ -17,13 +17,13 @@ The following project utilizes R to mine sentiment from over 21,000 hotel review
 ## File Directory
 
 1. [**data**](https://github.com/ianjeffries/text-sentiment-analysis/tree/master/data) - contains the three files used in analysis:  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a. [maldives_hotel_reviews.csv](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/data/maldives_hotel_reviews.csv) - Hotel reviews of resorts in the Republic of Maldives.
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b. [negative-lexicon.txt](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/data/negative-lexicon.txt) - Negative lexicon used to locate "negative" words.
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c. [positive-lexicon.txt](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/data/positive-lexicon.txt) - Positive lexicon used to locate "positive" words.
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a. [maldives_hotel_reviews.csv](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/data/maldives_hotel_reviews.csv) - Hotel reviews of resorts in the Republic of Maldives.  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b. [negative-lexicon.txt](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/data/negative-lexicon.txt) - Negative lexicon used to locate "negative" words.  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c. [positive-lexicon.txt](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/data/positive-lexicon.txt) - Positive lexicon used to locate "positive" words.  
      
 2. [**images**](https://github.com/ianjeffries/text-sentiment-analysis/tree/master/images) - contains vizualizations:  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a. [body_wordcloud.png](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/body_wordcloud.png) - Wordcloud showing commonly occuring words in the review body.  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b. [header_wordcloud.PNG](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/header_wordcloud.PNG) - Wordcloud showing commonly occuring words in the review header. 
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b. [header_wordcloud.PNG](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/header_wordcloud.PNG) - Wordcloud showing commonly occuring words in the review header.  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c. [monthly_sentiment.png](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/monthly_sentiment.png) - Overall sentiment by month for all hotels in the Republic of Maldives.   
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;d. [reviews_by_year.png](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/reviews_by_year.png) - Count of reviews by year.  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e. [sentiment_comparison.png](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/sentiment_comparison.png) - Comparision of negative and positive wordcounts between the review header and body.   
@@ -57,8 +57,8 @@ for(p in packages){
 
 ## Credits
 
-1. Would like to thank Dr. Mo Saraee for the maldives_hotel_reviews.csv dataset.
-2. Would like to thank Bing Liu and Minqing Hu for the negative-lexicon.txt and positive-lexicon.txt files, which was taken off [their website](https://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html#lexicon).
+1. Would like to thank Dr. Mo Saraee from the University of Salford for the maldives_hotel_reviews.csv dataset.
+2. Would like to thank Bing Liu and Minqing Hu for the negative-lexicon.txt and positive-lexicon.txt files, which were taken off of [their website](https://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html#lexicon).
 
 ## License 
 
