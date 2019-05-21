@@ -1,7 +1,7 @@
 # review-sentiment-analysis
 
 <p align="center">
-<img src="https://github.com/ianjeffries/election-predictions/blob/master/images/voting_trends.png" alt="alt text" width="640" height="320">
+<img src="https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/header_wordcloud.PNG" alt="alt text" width="640" height="320">
 </p>
 
 ## Index 
@@ -16,28 +16,22 @@ The following project utilizes R to mine sentiment from over 21,000 hotel review
 
 ## File Directory
 
-1. [**data**](https://github.com/ianjeffries/election-predictions/tree/master/data) - contains three data sets used in analysis (taken from kaggle, referenced in the credits):  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a. [county_facts.csv](https://github.com/ianjeffries/election-predictions/blob/master/data/county_facts.csv) - Demographic breakdown of each county.  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b. [county_facts_dictionary.csv](https://github.com/ianjeffries/election-predictions/blob/master/data/county_facts_dictionary.csv) - Dictionary to decode variable names in county_facts.csv.  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c. [pres16results.csv](https://github.com/ianjeffries/election-predictions/blob/master/data/pres16results.csv) - Results of the 2016 election by county.
+1. [**data**](https://github.com/ianjeffries/text-sentiment-analysis/tree/master/data) - contains the three files used in analysis:  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a. [maldives_hotel_reviews.csv](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/data/maldives_hotel_reviews.csv) - Hotel reviews of resorts in the Republic of Maldives.
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b. [negative-lexicon.txt](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/data/negative-lexicon.txt) - Negative lexicon used to locate "negative" words.
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c. [positive-lexicon.txt](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/data/positive-lexicon.txt) - Positive lexicon used to locate "positive" words.
      
-2. [**images**](https://github.com/ianjeffries/election-predictions/tree/master/images) - contains vizualizations:  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a. [decision_tree.png](https://github.com/ianjeffries/election-predictions/blob/master/images/decision_tree.png) - Decision tree created from modelling process.  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b. <font color="black">[model_comparison.png](https://github.com/ianjeffries/election-predictions/blob/master/images/model_comparison.png)</font> - Comparison of 3 classification models used.  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c. [population_trends.png](https://github.com/ianjeffries/election-predictions/blob/master/images/population_trends.png) - Population size by voting preference.  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;d. [voting_trends.png](https://github.com/ianjeffries/election-predictions/blob/master/images/voting_trends.png) - Voting trends by top 5 normalized demographics.  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e. [democrat_arules.png](https://github.com/ianjeffries/election-predictions/blob/master/images/democrat_arules.png) - Scatterplot of democratic association rules by support and confidence.  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f. [republican_arules.png](https://github.com/ianjeffries/election-predictions/blob/master/images/republican_arules.png) - Scatterplot of republican association rules by support and confidence.  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;g. [democrats_grid.png](https://github.com/ianjeffries/election-predictions/blob/master/images/democrat_grid.png) - Color grid of democratic association rules.  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;h. [republican_grid.png](https://github.com/ianjeffries/election-predictions/blob/master/images/republican_grid.png) - Color grid of republican association rules. 
+2. [**images**](https://github.com/ianjeffries/text-sentiment-analysis/tree/master/images) - contains vizualizations:  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a. [body_wordcloud.png](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/body_wordcloud.png) - Wordcloud showing commonly occuring words in the review body.  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b. [header_wordcloud.PNG](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/header_wordcloud.PNG) - Wordcloud showing commonly occuring words in the review header. 
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;c. [monthly_sentiment.png](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/monthly_sentiment.png) - Overall sentiment by month for all hotels in the Republic of Maldives.   
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;d. [reviews_by_year.png](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/reviews_by_year.png) - Count of reviews by year.  
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e. [sentiment_comparison.png](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/sentiment_comparison.png) - Comparision of negative and positive wordcounts between the review header and body.   
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f. [top_12_hotels.png](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/top_12_hotels.png) - Top 12 resorts sentiment comparison.   
   
-3. [**classification**](https://github.com/ianjeffries/election-predictions/tree/master/classification) - contains classification files that predict election outcome based off demographics:  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a. [classification.Rmd](https://github.com/ianjeffries/election-predictions/blob/master/classification/classification.Rmd) - R Markdown detailing the classification process, from data cleaning to model creation.  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b. [classification.pdf](https://github.com/ianjeffries/election-predictions/blob/master/classification/classification.pdf) - PDF that shows R code and the outputted results, for easy viewing.
+3. [**text_mining.Rmd**](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/text_mining.Rmd) - R Markdown detailing the text mining process.  
   
-4. [**association_rules**](https://github.com/ianjeffries/election-predictions/tree/master/association_rules) - contains association rules files:  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a. [association_rules.Rmd](https://github.com/ianjeffries/election-predictions/blob/master/association_rules/association_rules.Rmd) - R Markdown to mine rules that relate to demographics and voting preference.  
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b. [association_rules.pdf](https://github.com/ianjeffries/election-predictions/blob/master/association_rules/association_rules.pdf) - PDF that shows R code and the outputted results, for easy viewing.
+4. [**text_mining.pdf**](https://github.com/ianjeffries/text-sentiment-analysis/blob/master/text_mining.pdf) - PDF that shows R code and the outputted results, for easy viewing.
   
 5. [**results.pdf**](https://github.com/ianjeffries/election-predictions/blob/master/results.pdf) - A full write-up comparing classification and association rules mining in R vs SAS.
 
@@ -49,22 +43,22 @@ The following packages are used:
   
   ```
 #list of packages used
-packages <- c("dplyr", "tidyr", "ggplot2", "class", "rpart", "rpart.plot", "neuralnet", "arules",
-              "plyr", "mltools", "arulesViz", "plotly", "RCurl")
+packages <- c("tm", "wordcloud", "lubridate", "SnowballC", "ggplot2", "dplyr", 
+              "tidyr", "plylr")
 
-#check to see if package is already installed, if not, install
+#check to see if package is already installed
 for(p in packages){
   if(!require(p, character.only = TRUE)) {
     install.packages(p)
     library(p, character.only = TRUE)
-  } 
+  }
 }
 ```
 
 ## Credits
 
-1. Would like to thank Ben Hammer for the county_facts.csv and county_facts_dictionary.csv datasets, which were taken off [Kaggle](https://www.kaggle.com/benhamner/2016-us-election/home).
-2. Would like to thank Steve Palley for the pres16results.csv dataset, which was taken off [Kaggle](https://www.kaggle.com/stevepalley/2016uspresidentialvotebycounty/home).
+1. Would like to thank Dr. Mo Saraee for the maldives_hotel_reviews.csv dataset.
+2. Would like to thank Bing Liu and Minqing Hu for the negative-lexicon.txt and positive-lexicon.txt files, which was taken off [their website](https://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html#lexicon).
 
 ## License 
 
