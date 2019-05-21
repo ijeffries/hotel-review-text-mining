@@ -404,8 +404,10 @@ dup_removal[,c(1,3)] <- time_plot %>%
   group_by(Review.id, review.sentiment, Review.Count) %>%
   summarize(count = sum(count)) %>%
   spread(Review.Count, count) %>%
-  mutate(positive.sentiment.percent = round(sum(pos.count) / (sum(neg.count) + sum(pos.count)) * 100, 2),
-         negative.sentiment.percent = round(sum(neg.count) / (sum(neg.count) + sum(pos.count)) * 100, 2)) %>%
+  mutate(positive.sentiment.percent = round(sum(pos.count) / 
+                                           (sum(neg.count) + sum(pos.count)) * 100, 2),
+         negative.sentiment.percent = round(sum(neg.count) / 
+                                           (sum(neg.count) + sum(pos.count)) * 100, 2)) %>%
   arrange(desc(review.count)) %>%
   filter(review.count < 8) %>%
   group_by(review.sentiment) %>%
@@ -419,15 +421,17 @@ dup_removal[,c(1,2)] <- time_plot %>%
   group_by(Review.id, review.sentiment, Review.Count) %>%
   summarize(count = sum(count)) %>%
   spread(Review.Count, count) %>%
-  mutate(positive.sentiment.percent = round(sum(pos.count) / (sum(neg.count) + sum(pos.count)) * 100, 2),
-         negative.sentiment.percent = round(sum(neg.count) / (sum(neg.count) + sum(pos.count)) * 100, 2)) %>%
+  mutate(positive.sentiment.percent = round(sum(pos.count) / 
+                                           (sum(neg.count) + sum(pos.count)) * 100, 2),
+         negative.sentiment.percent = round(sum(neg.count) / 
+                                           (sum(neg.count) + sum(pos.count)) * 100, 2)) %>%
   group_by(review.sentiment) %>%
   summarize(review.count = sum(review.count))
 
-#make narrow
+#make dataset narrow for graphing
 dup_removal <- gather(dup_removal, key = Source, value = Total_Reviews, 2:3)
 
-#graph
+#graph to compare sentiment with and without duplicates
 ggplot(dup_removal, aes(x = review.sentiment, y = Total_Reviews, fill = Source)) +
   geom_bar(stat = "identity", position = position_dodge(width = .7), alpha = .9) +
   ggtitle("Duplicate Review Impact") +
@@ -441,7 +445,7 @@ deduped_final_data <- unique(final_sentiment2[ , c(2:10)])
 
 Finally, graphs can be created to see the number of reviews by year, the total review sentiment by month for all resorts in Maldives, and the sentiment of the top 12 hotels, defined by the total word count of reviews for that specific resort. (more words means more text to work with for analysis)
 
-```{r final-viz}
+```{r final-viz, warning=FALSE}
 #plot reviews by date 
 year_plot <- deduped_final_data
 year_plot$Review.Date <- as.POSIXct(year_plot$Review.Date)
@@ -459,7 +463,7 @@ time_plot$Review.Year <- format(time_plot$Review.Year, "%Y")
 time_plot$Review.Date <- as.POSIXct(time_plot$Review.Date)
 time_plot$Review.Date <- format(time_plot$Review.Date, "%Y-%m")
 
-#graph by month
+#graph by month for 2017 and 2018
 time_plot %>%
   select(Review.Date, pos.count, neg.count, Review.Year) %>%
   filter(Review.Year == 2018 | Review.Year == 2017) %>%
@@ -467,17 +471,21 @@ time_plot %>%
   group_by(Review.Date, Review.Count) %>%
   summarize(count = sum(count)) %>%
   spread(Review.Count, count) %>%
-  mutate(pos.sentiment = as.numeric(sum(pos.count) / (sum(neg.count) + sum(pos.count)) * 100),
-         neg.sentiment = as.numeric(sum(neg.count) / (sum(neg.count) + sum(pos.count)) * 100)) %>%
+  mutate(pos.sentiment = as.numeric(sum(pos.count) / (sum(neg.count) + 
+                                                        sum(pos.count)) * 100),
+         neg.sentiment = as.numeric(sum(neg.count) / (sum(neg.count) + 
+                                                        sum(pos.count)) * 100)) %>%
   select(Review.Date, pos.sentiment, neg.sentiment) %>%
   gather(key = Sentiment.Type, value = Sentiment.Percent, 2:3) %>%
-  ggplot(aes(x = Review.Date, y = Sentiment.Percent, color = Sentiment.Type, group = Sentiment.Type)) +
+  ggplot(aes(x = Review.Date, y = Sentiment.Percent, 
+             color = Sentiment.Type, group = Sentiment.Type)) +
   geom_point() + geom_line() +
   ggtitle("Review Sentiment by Month") +
   theme(axis.text.x = element_text(angle = -70)) +
-  scale_y_continuous(limits = c(0,100), breaks = c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100))
+  scale_y_continuous(limits = c(0,100), breaks = c(0, 10, 20, 30, 40, 50, 
+                                                   60, 70, 80, 90, 100))
 
-#graph by hotel
+#graph by top 12 hotels
 time_plot %>%
   select(Hotel.Name, pos.count, neg.count) %>%
   gather(key = Review.Count, value = count, 2:3) %>%
@@ -485,12 +493,16 @@ time_plot %>%
   summarize(count = sum(count)) %>%
   spread(Review.Count, count) %>%
   mutate(total.word.count = pos.count + neg.count) %>%
-  mutate(positive.sentiment.percent = as.numeric(sum(pos.count) / (sum(neg.count) + sum(pos.count)) * 100),
-         negative.sentiment.percent = as.numeric(sum(neg.count) / (sum(neg.count) + sum(pos.count)) * 100)) %>%
+  mutate(positive.sentiment.percent = as.numeric(sum(pos.count) / (sum(neg.count) + 
+                                                                     sum(pos.count)) * 100),
+         negative.sentiment.percent = as.numeric(sum(neg.count) / (sum(neg.count) + 
+                                                                     sum(pos.count)) * 100)) %>%
   arrange(desc(total.word.count)) %>%
   filter(total.word.count > 762) %>%
-  select(Hotel.Name, positive.sentiment.percent, negative.sentiment.percent, total.word.count) %>%
-  ggplot(aes(x = negative.sentiment.percent, y = positive.sentiment.percent, color = Hotel.Name, size = total.word.count)) +
+  select(Hotel.Name, positive.sentiment.percent, 
+         negative.sentiment.percent, total.word.count) %>%
+  ggplot(aes(x = negative.sentiment.percent, y = positive.sentiment.percent, 
+             color = Hotel.Name, size = total.word.count)) +
   geom_point() +
   ggtitle("Review Sentiment by Top 12 Hotels") +
   theme(axis.text.x = element_text(angle = -50)) +
