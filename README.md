@@ -1,7 +1,7 @@
 # review-sentiment-analysis
 
 <p align="center">
-<img src="https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/header_wordcloud.PNG" alt="alt text" width="840" height="520">
+<img src="https://github.com/ianjeffries/text-sentiment-analysis/blob/master/images/header_wordcloud.PNG" alt="alt text" width="840" height="620">
 </p>
 
 ## Index 
